@@ -11,8 +11,19 @@ struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(EmojiArtDocument.palette.map { String($0) }, id: \.self) {
+                        Text($0)
+                            .font(Font.system(size: defaultEmojiSize))
+                    }
+                }
+            }
+            .padding(.horizontal)
+            Rectangle().foregroundColor(Color.yellow)
+        }
     }
+    
+    private let defaultEmojiSize: CGFloat = 40
 }
-
