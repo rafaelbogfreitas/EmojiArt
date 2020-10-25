@@ -21,7 +21,9 @@ struct EmojiArtDocumentView: View {
                 }
             }
             .padding(.horizontal)
-            Rectangle().foregroundColor(Color.yellow)
+            Rectangle()
+                .foregroundColor(Color.yellow)
+                .edgesIgnoringSafeArea([.horizontal,.bottom])
         }
     }
     
