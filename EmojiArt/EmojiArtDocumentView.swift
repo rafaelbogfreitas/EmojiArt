@@ -22,9 +22,28 @@ struct EmojiArtDocumentView: View {
             }
             .padding(.horizontal)
             Rectangle()
-                .foregroundColor(Color.yellow)
+                .foregroundColor(Color.white).overlay(
+                   Group {
+                        if document.backgroundImage != nil {
+                            Image(uiImage: document.backgroundImage!)
+                        }
+                        
+                    }
+                )
                 .edgesIgnoringSafeArea([.horizontal,.bottom])
+                .onDrop(of: ["public.image", "public.text"], isTargeted: nil) { providers, location in
+                    
+                    drop(providers: providers)
+                }
         }
+    }
+    
+    private func drop(providers: [NSItemProvider]) -> Bool {
+        let found = providers.loadFirstObject(ofType: URL.self) { url in
+            print("dropped \(url)")
+            document.setBackgroundURL(url)
+        }
+        return found
     }
     
     private let defaultEmojiSize: CGFloat = 40
