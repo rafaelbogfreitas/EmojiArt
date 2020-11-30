@@ -209,3 +209,14 @@ extension UIImage {
         return url
     }
 }
+
+
+extension EmojiArt.Emoji {
+    var fontSize: CGFloat {
+        CGFloat(self.size)
+    }
+    
+    var location: CGPoint {
+        CGPoint(x: CGFloat(x), y: CGFloat(y))
+    }
+}
