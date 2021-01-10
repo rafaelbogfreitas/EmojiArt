@@ -7,14 +7,22 @@
 
 import SwiftUI
 
-struct Spinning: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct Spinning: ViewModifier {
+    @State var isVisible = false
+    
+    func body(content: Content) -> some View {
+        
+        return content
+            .rotationEffect(Angle(degrees: isVisible ? 360 : 0))
+            .animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
+            .onAppear {
+                isVisible = true
+            }
     }
 }
 
-struct Spinning_Previews: PreviewProvider {
-    static var previews: some View {
-        Spinning()
+extension View {
+    func spinning() -> some View {
+        self.modifier(Spinning())
     }
 }
