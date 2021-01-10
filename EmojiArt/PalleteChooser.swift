@@ -9,7 +9,17 @@ import SwiftUI
 
 struct PalleteChooser: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Stepper(
+                onIncrement: {  },
+                onDecrement: {  },
+                label: {
+                    EmptyView()
+                })
+            
+            Text("Pallete name")
+        }
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
 
