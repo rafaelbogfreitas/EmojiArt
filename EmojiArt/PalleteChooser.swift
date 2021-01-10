@@ -8,16 +8,24 @@
 import SwiftUI
 
 struct PalleteChooser: View {
+    
+    @ObservedObject var document: EmojiArtDocument
+    @Binding var choosenPallete: String
+    
     var body: some View {
         HStack {
             Stepper(
-                onIncrement: {  },
-                onDecrement: {  },
+                onIncrement: {
+                    self.choosenPallete = self.document.palette(after: choosenPallete)
+                },
+                onDecrement: {
+                    self.choosenPallete = self.document.palette(before: choosenPallete)
+                },
                 label: {
                     EmptyView()
                 })
             
-            Text("Pallete name")
+            Text(self.document.paletteNames[self.choosenPallete] ?? "")
         }
         .fixedSize(horizontal: true, vertical: false)
     }
@@ -25,6 +33,6 @@ struct PalleteChooser: View {
 
 struct PalleteChooser_Previews: PreviewProvider {
     static var previews: some View {
-        PalleteChooser()
+        PalleteChooser(document: EmojiArtDocument(), choosenPallete: Binding.constant(""))
     }
 }

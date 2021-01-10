@@ -44,4 +44,14 @@ extension EmojiArtDocument {
     func removePallete(named name: String) {
         palleteNames[name] = nil
     }
+    
+    @discardableResult
+    func addEmoji(_ emoji: String, to pallete: String) -> String {
+        
+    }
+    
+    @discardableResult
+    func removeEmoji(_ emoji: String, to pallete: String) -> String {
+        
+    }
 }
