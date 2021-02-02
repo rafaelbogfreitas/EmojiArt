@@ -30,8 +30,8 @@ struct PalleteChooser: View {
                 .onTapGesture {
                     showPalleteEditor = true
                 }
-                .popover(isPresented: $showPalleteEditor) {
-                    PalleteEditor(choosenPallete: $choosenPallete)
+                .sheet(isPresented: $showPalleteEditor) {
+                    PalleteEditor(choosenPallete: $choosenPallete, showPalleteEditor: $showPalleteEditor)
                         .environmentObject(document)
                         .frame(minWidth: 300, minHeight: 500)
                 }
@@ -43,16 +43,26 @@ struct PalleteChooser: View {
 
 struct PalleteEditor: View {
     @Binding var choosenPallete: String
+    @Binding var showPalleteEditor: Bool
     @EnvironmentObject var document: EmojiArtDocument
     @State var palleteName: String = ""
     @State var emojisToAdd: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("PalleteEditor").font(.title).padding()
+            HStack {
+                Text("PalleteEditor").font(.title).padding()
+                HStack {
+                    Spacer()
+                    Button("done") {
+                        showPalleteEditor = false
+                    }.padding()
+                }
+            }
+            
             Divider()
             Form {
-                Section(header: Text("Pallete name")) {
+                Section {
                     TextField("Pallete name", text: $palleteName, onEditingChanged: { began in
                         if !began {
                             document.renamePalette(choosenPallete, to: palleteName)
@@ -67,14 +77,14 @@ struct PalleteEditor: View {
                 }
                 
                 Section(header: Text("Remove Emoji")) {
-                    VStack {
-                        ForEach(emojisToAdd.map { String($0) }, id: \.self) { emoji in
-                            Text(emoji)
-                                .onTapGesture {
-                                    choosenPallete = document.removeEmoji(emoji, fromPalette: choosenPallete)
-                                }
+                    Grid(choosenPallete.map { String($0) }, id: \.self) { emoji in
+                        Text(emoji).font(Font.system(size: fontSize))
+                            .onTapGesture {
+                                choosenPallete = document.removeEmoji(emoji, fromPalette: choosenPallete)
                         }
+                        .frame(height: self.height)
                     }
+                
                 }
                 
             }
@@ -83,7 +93,16 @@ struct PalleteEditor: View {
         .onAppear {
             palleteName = document.paletteNames[choosenPallete] ?? ""
         }
+        
     }
+    
+    //MARK: - Drawing Constants
+    
+    var height: CGFloat {
+        CGFloat((choosenPallete.count - 1) / 6) * 70 + 70
+    }
+    
+    let fontSize: CGFloat = 40
 }
 
 
