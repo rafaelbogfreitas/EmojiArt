@@ -65,9 +65,39 @@ struct EmojiArtDocumentView: View {
                 }
                 
             }
-            
+            .navigationBarItems(trailing: Button(action: {
+                if let url = UIPasteboard.general.url, url != self.document.backgroundUrl {
+                    confirmBackgroundPaste = true
+                } else {
+                    explainBackgroundPaste = true
+                }
+            }, label: {
+                Image(systemName: "doc.on.clipboard")
+                    .imageScale(.large)
+                    .alert(isPresented: $explainBackgroundPaste) {
+                        return Alert(
+                            title: Text("Paste background"),
+                            message: Text("Copy the image URL to the clipboard and use this button to paste it"),
+                            dismissButton: .default(Text("OK"))
+                        )
+                    }
+            }))
+            .zIndex(-1)
+        }
+        .alert(isPresented: $confirmBackgroundPaste) {
+            return Alert(
+                title: Text("Paste background"),
+                message: Text("Replace your image background with \(UIPasteboard.general.url?.absoluteString ?? "nothing") ?"),
+                primaryButton: .default(Text("OK")){
+                    self.document.backgroundUrl = UIPasteboard.general.url
+                },
+                secondaryButton: .cancel()
+            )
         }
     }
+    
+    @State private var explainBackgroundPaste = false
+    @State private var confirmBackgroundPaste = false
     
     var isLoading: Bool {
         document.backgroundUrl != nil && document.backgroundImage == nil
@@ -102,7 +132,9 @@ struct EmojiArtDocumentView: View {
     private func zoomToFit(_ image: UIImage?, in size: CGSize) {
         if let image = image,
            image.size.width > 0,
-           image.size.height > 0 {
+           image.size.height > 0,
+           size.height > 0,
+           size.width > 0 {
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
             document.steadyStatePanOffset = .zero
