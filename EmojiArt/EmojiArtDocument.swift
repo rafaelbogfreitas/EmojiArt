@@ -8,9 +8,10 @@
 import SwiftUI
 import Combine
 
-class EmojiArtDocument: ObservableObject, Hashable {
+class EmojiArtDocument: ObservableObject, Hashable, Identifiable {
 
     let id: UUID
+    
     var defaultKey: String
     
     func hash(into hasher: inout Hasher) {
@@ -26,6 +27,9 @@ class EmojiArtDocument: ObservableObject, Hashable {
     @Published var emojiArt: EmojiArt
     
     @Published private(set) var backgroundImage: UIImage?
+    
+    @Published var steadyStatePanOffset: CGSize = .zero
+    @Published var steadyStateZoomScale: CGFloat = 1.0
     
     var emojis: [EmojiArt.Emoji] { emojiArt.emojis }
     

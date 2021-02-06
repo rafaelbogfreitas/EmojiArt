@@ -10,6 +10,7 @@ import SwiftUI
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     @State private var choosenPallete = ""
+    
     var body: some View {
         VStack {
             HStack {
@@ -73,12 +74,10 @@ struct EmojiArtDocumentView: View {
     }
     
     //MARK: - Zoom
-    
-    @State private var steadyStateZoomScale: CGFloat = 1.0
     @GestureState private var gestureZoomScale: CGFloat = 1.0
     
     private var zoomScale: CGFloat {
-        steadyStateZoomScale * gestureZoomScale
+        document.steadyStateZoomScale * gestureZoomScale
     }
     
     private func doubleTapToZoom(in size: CGSize) -> some Gesture {
@@ -96,7 +95,7 @@ struct EmojiArtDocumentView: View {
             gestureZoomScale = latestGestureScale
         }
         .onEnded { finalGestureScale in
-            steadyStateZoomScale *= finalGestureScale
+            document.steadyStateZoomScale *= finalGestureScale
         }
     }
     
@@ -106,18 +105,17 @@ struct EmojiArtDocumentView: View {
            image.size.height > 0 {
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
-            steadyStatePanOffset = .zero
-            steadyStateZoomScale = min(hZoom, vZoom)
+            document.steadyStatePanOffset = .zero
+            document.steadyStateZoomScale = min(hZoom, vZoom)
         }
     }
     
     //MARK: - Pan
     
-    @State private var steadyStatePanOffset: CGSize = .zero
     @GestureState private var gesturePanOffset: CGSize = .zero
     
     private var panOffset: CGSize {
-        (steadyStatePanOffset + gesturePanOffset) * zoomScale
+        (document.steadyStatePanOffset + gesturePanOffset) * zoomScale
     }
     
     private func panGesture() -> some Gesture {
@@ -126,7 +124,7 @@ struct EmojiArtDocumentView: View {
                 gesturePanOffset = latestDragGestureValue.translation / zoomScale
             }
             .onEnded { finalDragState in
-                steadyStatePanOffset = steadyStatePanOffset + (finalDragState.translation / zoomScale)
+                document.steadyStatePanOffset = document.steadyStatePanOffset + (finalDragState.translation / zoomScale)
             }
     }
  
