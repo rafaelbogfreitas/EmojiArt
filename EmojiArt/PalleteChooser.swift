@@ -30,7 +30,7 @@ struct PalleteChooser: View {
                 .onTapGesture {
                     showPalleteEditor = true
                 }
-                .sheet(isPresented: $showPalleteEditor) {
+                .popover(isPresented: $showPalleteEditor) {
                     PalleteEditor(choosenPallete: $choosenPallete, showPalleteEditor: $showPalleteEditor)
                         .environmentObject(document)
                         .frame(minWidth: 300, minHeight: 500)
